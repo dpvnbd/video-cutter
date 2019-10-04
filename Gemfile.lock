@@ -210,7 +210,7 @@ DEPENDENCIES
   rswag-api
   rswag-specs
   rswag-ui
-  rubocop-rails_config (= 0.4.4)
+  rubocop-rails_config
   shoulda-matchers
   spring
   spring-watcher-listen (~> 2.0.0)
