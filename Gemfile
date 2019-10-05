@@ -64,3 +64,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Validation of type and size of attached files
 gem 'active_storage_validations', '0.8.3'
+
+# FFMPEG-wrapper for video editing
+gem 'streamio-ffmpeg', '3.0.2'
