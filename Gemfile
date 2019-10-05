@@ -61,3 +61,6 @@ gem "rswag-ui"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# Validation of type and size of attached files
+gem 'active_storage_validations', '0.8.3'
