@@ -35,5 +35,15 @@ module VideoCutter
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
     end
+
+    api_host = ENV['API_HOST'] || "http://localhost:3000"
+    config.action_mailer.default_url_options = { host: api_host }
+    Rails.application.routes.default_url_options[:host] = api_host
+  end
+end
+
+if ENV['RAILS_ENV'] != 'production'
+  RSpec.configure do |config|
+    config.swagger_dry_run = false
   end
 end

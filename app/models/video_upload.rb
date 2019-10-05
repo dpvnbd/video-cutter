@@ -12,4 +12,16 @@ class VideoUpload < ApplicationRecord
   validates :output_file, content_type: ALLOWED_FILE_TYPES, size: {less_than: 100.megabytes}
 
   enum processing_status: %i[scheduled processing done failed]
+
+  %i[input_file output_file].each do |attachment_name|
+    define_method "#{attachment_name}_url" do
+      attachment = send(attachment_name)
+      Rails.application.routes.url_helpers.rails_blob_url(attachment) if attachment.attached?
+    end
+
+    define_method "#{attachment_name}_path" do
+      attachment = send(attachment_name)
+      ActiveStorage::Blob.service.path_for(attachment.key) if attachment.attached?
+    end
+  end
 end

@@ -24,7 +24,7 @@ RSpec.describe VideoUpload, type: :model do
       expect(video_upload).to be_invalid
     end
 
-    describe "to_seconds", focus: true do
+    describe "to_seconds" do
       subject { build :video_upload, from_seconds: from_seconds, to_seconds: to_seconds }
       let(:from_seconds) { 10 }
 
@@ -80,6 +80,36 @@ RSpec.describe VideoUpload, type: :model do
       end
 
       # TODO: test upper limit (and add a large file to the repository?)
+    end
+  end
+
+  describe "file locations" do
+    context "when files attached" do
+      let(:video_upload) { create :video_upload, :with_output_file }
+
+      %i[input_file output_file].each do |attribute|
+        url_attribute = "#{attribute}_url"
+        path_attribute = "#{attribute}_path"
+
+        it "has #{url_attribute}" do
+          expect(video_upload.send(url_attribute)).to be_present
+        end
+
+        it "has #{path_attribute}" do
+          expect(video_upload.send(path_attribute)).to be_present
+        end
+      end
+    end
+
+    context "when output file is not attached" do
+      let(:video_upload) { create :video_upload }
+      it "doesn't have output_file_url" do
+        expect(video_upload.output_file_url).to be_nil
+      end
+
+      it "doesn't have output_file_path" do
+        expect(video_upload.output_file_path).to be_nil
+      end
     end
   end
 end
