@@ -13,28 +13,29 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a swagger_doc tag to the
   # the root example_group in your specs, e.g. describe '...', swagger_doc: 'v2/swagger.json'
   config.swagger_docs = {
-      'v1/swagger.json' => {
-          swagger: '2.0',
-          info: {
-              title: 'Video Cutter API V1',
-              version: 'v1'
-          },
-          basePath: '/api/v1',
-          consumes: %w[application/json multipart/form-data],
-          produces: ['application/json'],
-          securityDefinitions: {
-              apiKey: {
-                  type: :apiKey,
-                  name: "X-Api-Key",
-                  in: :header
-              },
-          },
-          security: [
-              {apiKey: []},
-          ],
-          paths: {}
-      }
+    'v1/swagger.json' => {
+      swagger: '2.0',
+      info: {
+        title: 'Video Cutter API V1',
+        version: 'v1'
+      },
+      basePath: '/api/v1',
+      consumes: %w[application/json multipart/form-data],
+      produces: ['application/json'],
+      securityDefinitions: {
+        apiKey: {
+          type: :apiKey,
+          name: "X-Api-Key",
+          in: :header
+        },
+      },
+      security: [
+        {apiKey: []},
+      ],
+      paths: {},
+    }
   }
+
 
   # Generate response examples
   config.after do |example|
@@ -44,4 +45,9 @@ RSpec.configure do |config|
   end
 
   config.include_context "api key auth"
+
+  def parameter_show_destroy_schema
+    parameter name: :id, in: :path, required: true, type: :string
+  end
+
 end

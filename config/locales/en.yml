@@ -30,4 +30,5 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  unauthenticated: "User with provided API key is not found"
+  not_found: "Record not found"
