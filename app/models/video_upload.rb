@@ -1,6 +1,7 @@
 class VideoUpload < ApplicationRecord
   has_one_attached :input_file
   has_one_attached :output_file
+  belongs_to :user
 
   enum processing_status: %i[scheduled processing done failed]
 

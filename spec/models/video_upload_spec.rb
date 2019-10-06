@@ -10,6 +10,10 @@ RSpec.describe VideoUpload, type: :model do
     it { is_expected.to have_db_index(:processing_status) }
   end
 
+  describe "associations" do
+    it { is_expected.to belong_to(:user) }
+  end
+
   describe "validations" do
     subject(:video_upload) { create :video_upload }
 
