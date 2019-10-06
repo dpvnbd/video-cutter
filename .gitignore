@@ -24,3 +24,5 @@
 
 .env
 .idea/
+spec/examples.txt
+/swagger/
