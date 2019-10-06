@@ -14,6 +14,11 @@ RSpec.describe VideoUploadCutter do
     it "output file is attached" do
       expect(result.output_file.attached?).to eq(true)
     end
+
+    it "sets duration of output file" do
+      expected_duration = video_upload.to_seconds - video_upload.from_seconds
+      expect(result.duration).to be_within(1).of(expected_duration)
+    end
   end
 
   shared_examples "processing has failed" do

@@ -12,9 +12,10 @@ class VideoUploadCutter
     set_status(:processing)
     begin
       Rails.logger.info("#{video_upload.id} cutting started")
-      movie.transcode(temp_output_path, command_arguments)
+      output = movie.transcode(temp_output_path, command_arguments)
       output_filename = "processed_#{input_file_name}"
       @video_upload.output_file.attach(io: File.open(temp_output_path), filename: output_filename)
+      @video_upload.update(duration: output.duration)
     rescue FFMPEG::Error => e
       Rails.logger.error("#{video_upload.id} cutting has failed: #{e.message}")
       set_status(:failed)
@@ -31,10 +32,9 @@ class VideoUploadCutter
 
   def command_arguments
     # ffmpeg -ss 78 -i input.mp4 -to 10 -c copy output.mp4
-    duration = video_upload.to_seconds - video_upload.from_seconds + 900
     [
         "-ss", video_upload.from_seconds.to_s, # seek to timestamp
-        '-to', duration.to_s, # duration to cut
+        '-to', video_upload.to_seconds.to_s, # timestamp to cut to
         '-c', 'copy' #  trim via stream copy (very fast)
     ]
   end

@@ -8,6 +8,7 @@ FactoryBot.define do
 
     trait :done do
       processing_status { :done }
+      duration { 5.67 }
       output_file { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'files', 'file.mp4'), 'video/mp4') }
     end
 

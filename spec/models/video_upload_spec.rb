@@ -4,6 +4,7 @@ RSpec.describe VideoUpload, type: :model do
   describe "columns" do
     it { is_expected.to have_db_column(:from_seconds).of_type(:integer).with_options(null: false) }
     it { is_expected.to have_db_column(:to_seconds).of_type(:integer).with_options(null: false) }
+    it { is_expected.to have_db_column(:duration).of_type(:float) }
     it { is_expected.to have_db_column(:processing_status).of_type(:integer).with_options(null: false, default: :scheduled) }
     it { is_expected.to define_enum_for(:processing_status).with_values(%i[scheduled processing done failed]).with_prefix(:processing) }
     it { is_expected.to have_db_column(:message).of_type(:string).with_options(null: true) }
@@ -21,6 +22,7 @@ RSpec.describe VideoUpload, type: :model do
     it { is_expected.to validate_presence_of(:to_seconds) }
     it { is_expected.to validate_numericality_of(:from_seconds).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:to_seconds).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:duration).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_length_of(:message).is_at_most(300) }
 
     it "input_file attached" do

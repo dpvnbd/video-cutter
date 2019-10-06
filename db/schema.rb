@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_06_120027) do
+ActiveRecord::Schema.define(version: 2019_10_06_202117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 2019_10_06_120027) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id"
+    t.float "duration"
     t.index ["processing_status"], name: "index_video_uploads_on_processing_status"
     t.index ["user_id"], name: "index_video_uploads_on_user_id"
   end

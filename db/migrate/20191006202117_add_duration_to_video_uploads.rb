@@ -1,0 +1,5 @@
+class AddDurationToVideoUploads < ActiveRecord::Migration[5.2]
+  def change
+    add_column :video_uploads, :duration, :float
+  end
+end

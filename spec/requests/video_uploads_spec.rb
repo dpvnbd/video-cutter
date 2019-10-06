@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "video_uploads" do
   let(:url) { "/api/v1/video_uploads" }
-  let(:attributes) { %i[id input_file_url output_file_url from_seconds to_seconds processing_status] }
+  let(:attributes) { %i[id input_file_url output_file_url from_seconds to_seconds processing_status duration] }
 
   let(:user) { create :user, :with_video_uploads }
 
