@@ -67,3 +67,5 @@ gem 'active_storage_validations', '0.8.3'
 
 # FFMPEG-wrapper for video editing
 gem 'streamio-ffmpeg', '3.0.2'
+
+gem 'active_model_serializers', '~> 0.10.0'
