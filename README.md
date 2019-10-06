@@ -1,24 +1,21 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Development dependencies
+* ruby 2.6.1
+* postgres 11
+* ffmpeg 
+### Generating docs:
+`rake rswag:specs:swaggerize`
+visit http://localhost:3000/api/docs
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Running in docker
+* create .env file from example, add master key
+* build and run containers: 
+`docker-compose up`
+* create and migrate production db and test db (for documentation generator)
+`docker exec -it vc_web rails db:create RAILS_ENV=production`
+`docker exec -it vc_web rails db:create RAILS_ENV=test`
+`docker exec -it vc_web rails db:migrate RAILS_ENV=production`
+`docker exec -it vc_web rails db:migrate RAILS_ENV=test`
+`docker exec -it vc_web rake rswag:specs:swaggerize RAILS_ENV=test`
+visit http://localhost:3000/api/docs

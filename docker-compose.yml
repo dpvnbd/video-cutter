@@ -1,0 +1,55 @@
+version: '3'
+services:
+  db:
+    image: postgres:11.2-alpine
+    restart: always
+    shm_size: 256MB
+    container_name: vc_db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "3"
+    volumes:
+      - /var/vc/vc_db_container_data:/var/lib/postgresql/data
+  web:
+    build: .
+    command: ./wait-for-postgres.sh db bundle exec rails s -b '0.0.0.0' -e production
+    restart: always
+    container_name: vc_web
+    ports:
+      - "3000:3000"
+    links:
+      - db
+    environment:
+      DOCKER_LOGS: "true"
+    env_file:
+      - .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    volumes:
+      - /var/vc/vc_web_storage:/vc-api/storage
+    depends_on:
+      - 'db'
+      - 'redis'
+  redis:
+    image: redis:5.0.6-alpine
+    command: redis-server
+  sidekiq:
+    depends_on:
+      - 'db'
+      - 'redis'
+    build: .
+    command: sidekiq
+    env_file:
+      - '.env'
+    links:
+      - redis
