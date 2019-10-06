@@ -13,13 +13,35 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a swagger_doc tag to the
   # the root example_group in your specs, e.g. describe '...', swagger_doc: 'v2/swagger.json'
   config.swagger_docs = {
-    'v1/swagger.json' => {
-      swagger: '2.0',
-      info: {
-        title: 'API V1',
-        version: 'v1'
-      },
-      paths: {}
-    }
+      'v1/swagger.json' => {
+          swagger: '2.0',
+          info: {
+              title: 'Video Cutter API V1',
+              version: 'v1'
+          },
+          basePath: '/api/v1',
+          consumes: %w[application/json multipart/form-data],
+          produces: ['application/json'],
+          securityDefinitions: {
+              apiKey: {
+                  type: :apiKey,
+                  name: "X-Api-Key",
+                  in: :header
+              },
+          },
+          security: [
+              {apiKey: []},
+          ],
+          paths: {}
+      }
   }
+
+  # Generate response examples
+  config.after do |example|
+    if example.metadata[:response].present? && response&.body&.present?
+      example.metadata[:response][:examples] = {"application/json" => JSON.parse(response.body, symbolize_names: true)}
+    end
+  end
+
+  config.include_context "api key auth"
 end
