@@ -22,7 +22,7 @@ RSpec.shared_context 'index request' do |model_plural_name|
   end
 end
 
-RSpec.shared_context 'show request' do |model_name|
+RSpec.shared_context 'show request' do
   let(:request_response) do
     request_params = respond_to?(:params) ? params : nil
     record_id = extract_attributes(record, [:id])['id'] # gets id if it's an object or a hash
@@ -30,7 +30,6 @@ RSpec.shared_context 'show request' do |model_name|
     response
   end
 
-  let(:response_record) { JSON.parse(request_response.body)[model_name.to_s] }
   let(:expected_record) { record }
 end
 
@@ -61,7 +60,8 @@ RSpec.shared_context 'create request' do |model_name|
   end
 end
 
-RSpec.shared_examples 'expected record returned' do
+RSpec.shared_examples 'expected record returned' do |model_name|
+  let(:response_record) { JSON.parse(request_response.body)[model_name.to_s] }
   let(:expected_record_attributes) { extract_attributes(expected_record, attributes) }
   let(:response_record_attributes) { extract_attributes(response_record, attributes) }
 

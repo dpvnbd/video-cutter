@@ -54,5 +54,47 @@ RSpec.describe 'Video uploads' do
         run_test!
       end
     end
+
+    get "Shows upload" do
+      tags 'Video Uploads'
+      parameter name: :id, in: :path, required: true, type: :string
+
+      let(:record) { create :video_upload, :done, user: user }
+      let(:id) { record.id }
+
+      response "200", "record" do
+        run_test!
+      end
+
+      response "404", "Video upload not found" do
+        let(:id) { "f9f29e49-a49d-44b0-afa1-3d81c1b41039" }
+        run_test!
+      end
+    end
+  end
+
+  path "/video_uploads/{id}/restart" do
+    post "Restarts processing" do
+      tags 'Video Uploads'
+      parameter name: :id, in: :path, required: true, type: :string
+
+      let(:id) { record.id }
+
+      response "200", "Video upload processing is restarted" do
+        let(:record) { create :video_upload, :failed, user: user }
+
+        run_test!
+      end
+
+      response "400", "Video upload not failedd" do
+        let(:record) { create :video_upload, :done, user: user }
+        run_test!
+      end
+
+      response "404", "Video upload not found" do
+        let(:id) { "f9f29e49-a49d-44b0-afa1-3d81c1b41039" }
+        run_test!
+      end
+    end
   end
 end

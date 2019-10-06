@@ -3,7 +3,7 @@ class VideoUpload < ApplicationRecord
   has_one_attached :output_file
   belongs_to :user
 
-  enum processing_status: %i[scheduled processing done failed]
+  enum processing_status: %i[scheduled processing done failed], _prefix: :processing
 
   validates :from_seconds, :to_seconds, :processing_status, presence: true
   validates :from_seconds, :to_seconds, numericality: {greater_than_or_equal_to: 0}
@@ -24,5 +24,9 @@ class VideoUpload < ApplicationRecord
       attachment = send(attachment_name)
       ActiveStorage::Blob.service.path_for(attachment.key) if attachment.attached?
     end
+  end
+
+  def restart_allowed?
+    self.processing_failed?
   end
 end

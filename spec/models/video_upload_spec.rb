@@ -5,7 +5,7 @@ RSpec.describe VideoUpload, type: :model do
     it { is_expected.to have_db_column(:from_seconds).of_type(:integer).with_options(null: false) }
     it { is_expected.to have_db_column(:to_seconds).of_type(:integer).with_options(null: false) }
     it { is_expected.to have_db_column(:processing_status).of_type(:integer).with_options(null: false, default: :scheduled) }
-    it { is_expected.to define_enum_for(:processing_status).with_values(%i[scheduled processing done failed]) }
+    it { is_expected.to define_enum_for(:processing_status).with_values(%i[scheduled processing done failed]).with_prefix(:processing) }
     it { is_expected.to have_db_column(:message).of_type(:string).with_options(null: true) }
     it { is_expected.to have_db_index(:processing_status) }
   end
@@ -113,6 +113,31 @@ RSpec.describe VideoUpload, type: :model do
 
       it "doesn't have output_file_path" do
         expect(video_upload.output_file_path).to be_nil
+      end
+    end
+  end
+
+  describe "restart_allowed?" do
+    allowed_statuses = [:failed]
+    forbidden_statuses = [:scheduled, :processing, :done]
+
+    allowed_statuses.each do |status|
+      context "when #{status}" do
+        let(:video_upload) { create :video_upload, processing_status: status }
+
+        it "allows restart" do
+          expect(video_upload.restart_allowed?).to eq(true)
+        end
+      end
+    end
+
+    forbidden_statuses.each do |status|
+      context "when #{status}" do
+        let(:video_upload) { create :video_upload, processing_status: status }
+
+        it "doesn't allow restart" do
+          expect(video_upload.restart_allowed?).to eq(false)
+        end
       end
     end
   end

@@ -15,6 +15,16 @@ module Api
         render json: record, status: :created
       end
 
+      def restart
+        if record.restart_allowed?
+          VideoCutterWorker.perform_async(record.id)
+          render json: record
+        else
+          render json: { errors: [I18n.t(:restart_forbidden)] }, status: :bad_request
+
+        end
+      end
+
       def destroy
         record.destroy!
         head :no_content

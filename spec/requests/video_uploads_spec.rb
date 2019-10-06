@@ -1,6 +1,4 @@
 require 'rails_helper'
-require 'sidekiq/testing'
-Sidekiq::Testing.fake!
 
 RSpec.describe "video_uploads" do
   let(:url) { "/api/v1/video_uploads" }
@@ -34,7 +32,7 @@ RSpec.describe "video_uploads" do
 
     context "when owner of the upload" do
       let(:user) { record.user }
-      it_behaves_like "expected record returned"
+      it_behaves_like "expected record returned", :video_upload
     end
 
     context "when not owner of the upload" do
@@ -89,7 +87,7 @@ RSpec.describe "video_uploads" do
 
     context "when valid params" do
       it_behaves_like "record is created"
-      it_behaves_like "expected record returned"
+      it_behaves_like "expected record returned", :video_upload
 
       it "attaches input file" do
         expect(created_record.input_file.attached?).to eq(true)
@@ -109,6 +107,51 @@ RSpec.describe "video_uploads" do
 
       it "responds with unprocessable entity" do
         expect(request_response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "doesn't add cutting job to queue" do
+        expect { request_response }.not_to change(VideoCutterWorker.jobs, :size)
+      end
+    end
+  end
+
+  describe "#restart" do
+    let(:request_response) do
+      post "#{url}/#{record_id}/restart", headers: {'X-Api-Key': user.api_key}
+      response
+    end
+    let(:record) { create :video_upload, :failed }
+    let(:expected_record) { record }
+    let(:record_id) { record.id }
+
+    context "when owner of the upload" do
+      let(:user) { record.user }
+      it_behaves_like "expected record returned", :video_upload
+
+      it "adds cutting job to queue" do
+        expect { request_response }.to change(VideoCutterWorker.jobs, :size).by(1)
+      end
+    end
+
+    context "when not owner of the upload" do
+      it "responds with not found" do
+        expect(request_response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when video upload doesn't exist" do
+      let(:record_id) { 'missing' }
+      it "responds with not found" do
+        expect(request_response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when upload is not failed" do
+      let(:record) { create :video_upload }
+
+      let(:user) { record.user }
+      it "returns bad request" do
+        expect(request_response).to have_http_status(:bad_request)
       end
 
       it "doesn't add cutting job to queue" do

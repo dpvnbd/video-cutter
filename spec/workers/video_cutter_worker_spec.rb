@@ -1,6 +1,4 @@
 require "rails_helper"
-require 'sidekiq/testing'
-Sidekiq::Testing.fake!
 
 RSpec.describe VideoCutterWorker do
   subject(:run_worker) { described_class.perform_async(video_upload_id) }
