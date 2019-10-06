@@ -76,6 +76,10 @@ RSpec.configure do |config|
   config.after :all do
     FileUtils.rm_rf(Rails.root.join("tmp", "storage"))
   end
+
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+  end
 end
 
 Shoulda::Matchers.configure do |config|

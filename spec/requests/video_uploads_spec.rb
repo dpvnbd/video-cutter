@@ -1,4 +1,6 @@
 require 'rails_helper'
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 
 RSpec.describe "video_uploads" do
   let(:url) { "/api/v1/video_uploads" }
@@ -92,6 +94,10 @@ RSpec.describe "video_uploads" do
       it "attaches input file" do
         expect(created_record.input_file.attached?).to eq(true)
       end
+
+      it "adds cutting job to queue" do
+        expect { request_response }.to change(VideoCutterWorker.jobs, :size).by(1)
+      end
     end
 
     context "when invalid params" do
@@ -103,6 +109,10 @@ RSpec.describe "video_uploads" do
 
       it "responds with unprocessable entity" do
         expect(request_response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "doesn't add cutting job to queue" do
+        expect { request_response }.not_to change(VideoCutterWorker.jobs, :size)
       end
     end
   end

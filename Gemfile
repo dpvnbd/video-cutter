@@ -69,3 +69,6 @@ gem 'active_storage_validations', '0.8.3'
 gem 'streamio-ffmpeg', '3.0.2'
 
 gem 'active_model_serializers', '~> 0.10.0'
+
+# Background jobs
+gem 'sidekiq', '6.0.1'

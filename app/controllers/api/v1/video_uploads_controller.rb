@@ -11,6 +11,7 @@ module Api
 
       def create
         record = current_user.video_uploads.create!(record_params)
+        VideoCutterWorker.perform_async(record.id)
         render json: record, status: :created
       end
 
