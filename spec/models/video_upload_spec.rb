@@ -51,8 +51,8 @@ RSpec.describe VideoUpload, type: :model do
     end
 
     describe "file formats" do
-      valid_files = %w(file.mp4 file.mkv file.webm)
-      invalid_files = %w(file file.png)
+      valid_files = %w[file.mp4 file.webm file_corrupt.mp4]
+      invalid_files = %w[file file.png]
 
       valid_files.each do |filename|
         context "when #{filename}" do
@@ -85,7 +85,7 @@ RSpec.describe VideoUpload, type: :model do
 
   describe "file locations" do
     context "when files attached" do
-      let(:video_upload) { create :video_upload, :with_output_file }
+      let(:video_upload) { create :video_upload, :done }
 
       %i[input_file output_file].each do |attribute|
         url_attribute = "#{attribute}_url"

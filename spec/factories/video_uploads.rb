@@ -5,8 +5,13 @@ FactoryBot.define do
     message { "Message" }
     input_file { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'files', 'file.mp4'), 'video/mp4') }
 
-    trait :with_output_file do
+    trait :done do
+      processing_status { :done }
       output_file { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'support', 'files', 'file.mp4'), 'video/mp4') }
+    end
+
+    trait :failed do
+      processing_status { :failed }
     end
   end
 end
