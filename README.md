@@ -1,7 +1,7 @@
 # README
 
 ## Development dependencies
-* ruby 2.6.1
+* ruby 2.6.5
 * postgres 11
 * ffmpeg 4
 ### Generating docs:
