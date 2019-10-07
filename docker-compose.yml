@@ -16,7 +16,7 @@ services:
         max-size: "1m"
         max-file: "3"
     volumes:
-      - /var/vc/vc_db_container_data:/var/lib/postgresql/data
+      - ./db_container_data:/var/lib/postgresql/data
   web:
     build: .
     command: ./wait-for-postgres.sh db bundle exec rails s -b '0.0.0.0' -e production
@@ -36,7 +36,7 @@ services:
         max-size: "10m"
         max-file: "5"
     volumes:
-      - /var/vc/vc_web_storage:/vc-api/storage
+      - .:/vc-api
     depends_on:
       - 'db'
       - 'redis'
@@ -44,12 +44,12 @@ services:
     image: redis:5.0.6-alpine
     command: redis-server
   sidekiq:
-    depends_on:
+    links:
       - 'db'
       - 'redis'
     build: .
-    command: sidekiq
+    command: bundle exec sidekiq -e production
     env_file:
       - '.env'
-    links:
-      - redis
+    volumes:
+      - .:/vc-api

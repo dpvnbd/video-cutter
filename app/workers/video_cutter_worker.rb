@@ -3,6 +3,11 @@ class VideoCutterWorker
 
   def perform(video_upload_id)
     video_upload = VideoUpload.find_by(id: video_upload_id)
-    VideoUploadCutter.new(video_upload).call if video_upload.present?
+    if video_upload.blank?
+      logger.warn "Can't find video upload #{video_upload_id}"
+    else
+      VideoUploadCutter.new(video_upload).call
+      logger.info "Cutting is finished for #{video_upload_id}"
+    end
   end
 end
