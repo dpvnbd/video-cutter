@@ -71,4 +71,4 @@ gem 'streamio-ffmpeg', '3.0.2'
 gem 'active_model_serializers', '~> 0.10.0'
 
 # Background jobs
-gem 'sidekiq', '6.0.1'
+gem 'sidekiq', '6.4.0'
